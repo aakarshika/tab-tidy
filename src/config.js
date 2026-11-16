@@ -1,8 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// TAB TIDY CONFIG
+// TAB TIDY DEFAULTS
 //
-// Edit this file to make Tab Tidy match your own setup, then reload the
-// extension from chrome://extensions. See the README for details.
+// Users change their settings on the options page (right-click the toolbar
+// icon → Options), which stores them in chrome.storage.sync. The values below
+// are only used until something is saved there, and again after "Reset to
+// defaults". The rules for each field are in settings.js.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Sites that should always be open as pinned tabs, in left-to-right order.
@@ -24,7 +26,7 @@ export const PINNED_ANCHORS = [
 ];
 
 // A tab that always sits right after the pinned tabs (handy for a local dev
-// server). It is opened if missing. Set to null to turn this off.
+// server). It is opened if missing. Set to null to turn this off by default.
 export const FIRST_UNPINNED_TAB = {
   name:  'Dev Server',
   match: 'localhost:5173',
@@ -32,4 +34,5 @@ export const FIRST_UNPINNED_TAB = {
 };
 
 // Colors cycled through for the per-domain tab groups (Chrome color tokens).
+// Not editable on the options page yet.
 export const DOMAIN_GROUP_COLORS = ['cyan', 'purple', 'pink', 'yellow', 'blue', 'green', 'red', 'orange', 'grey'];

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tab Tidy settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <div class="header-left">
+        <div class="logo" aria-hidden="true">⌥</div>
+        <h1>Tab Tidy settings</h1>
+      </div>
+      <span class="version" id="version"></span>
+    </header>
+
+    <form id="settings-form" novalidate>
+      <section class="section" aria-labelledby="anchors-heading">
+        <h2 class="section-label" id="anchors-heading">Pinned anchors</h2>
+        <p class="hint">
+          Sites kept open as pinned tabs, left to right in this order.
+          <strong>Match</strong> is a host with an optional path prefix, like
+          <code>mail.google.com</code> or <code>claude.ai/design</code>.
+          When several anchors match one tab, the longest pattern wins.
+        </p>
+        <ol class="anchors" id="anchors-list"></ol>
+        <p class="empty" id="anchors-empty" hidden>
+          No anchors. A cleanup still merges windows, removes duplicates and groups tabs by domain.
+        </p>
+        <button type="button" class="btn btn-secondary" id="add-anchor">+ Add anchor</button>
+      </section>
+
+      <section class="section" aria-labelledby="first-heading">
+        <h2 class="section-label" id="first-heading">First unpinned tab</h2>
+        <label class="toggle">
+          <input type="checkbox" id="first-enabled">
+          <span>Keep a tab right after the pinned tabs, and open it if it's missing</span>
+        </label>
+        <fieldset class="card fields" id="first-fields" aria-labelledby="first-heading">
+          <div class="field field-wide">
+            <label class="field-label" for="first-name">Name</label>
+            <input type="text" id="first-name" placeholder="Dev server" autocomplete="off" spellcheck="false"
+                   aria-describedby="first-name-error">
+            <div class="field-error" id="first-name-error"></div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="first-match">Match</label>
+            <input type="text" id="first-match" placeholder="localhost:5173" inputmode="url" autocomplete="off"
+                   autocapitalize="off" spellcheck="false" aria-describedby="first-match-error">
+            <div class="field-error" id="first-match-error"></div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="first-url">URL to open</label>
+            <input type="url" id="first-url" placeholder="http://localhost:5173" autocomplete="off"
+                   autocapitalize="off" spellcheck="false" aria-describedby="first-url-error">
+            <div class="field-error" id="first-url-error"></div>
+          </div>
+        </fieldset>
+      </section>
+
+      <div class="form-errors" id="form-errors" role="alert"></div>
+
+      <footer class="actions">
+        <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+        <button type="button" class="btn btn-secondary" id="reset-btn">Reset to defaults</button>
+        <span class="status" id="status" role="status" aria-live="polite"></span>
+      </footer>
+    </form>
+  </main>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>

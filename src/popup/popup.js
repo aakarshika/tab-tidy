@@ -1,3 +1,5 @@
+import { GROUP_COLORS } from '../settings.js';
+
 const $ = id => document.getElementById(id);
 
 const btn        = $('tidy-btn');
@@ -13,12 +15,7 @@ const groupsSec  = $('groups-section');
 const groupsGrid = $('groups-grid');
 
 // Chrome tab group color token → CSS color
-const CHROME_COLORS = {
-  red: '#e53935', green: '#43a047', orange: '#fb8c00',
-  blue: '#1e88e5', purple: '#8e24aa', cyan: '#00acc1',
-  pink: '#e91e63', yellow: '#f9a825', grey: '#9e9e9e',
-};
-const colorFor = token => CHROME_COLORS[token] || '#888';
+const colorFor = token => GROUP_COLORS[token] || '#888';
 
 /** Small DOM helper. Text always goes through textContent, never innerHTML. */
 function el(tag, className, text) {
@@ -45,6 +42,10 @@ function renderPreview(data) {
   tabCount.textContent = data.tabCount;
   pinCount.textContent = data.pinnedCount;
 
+  if (!data.anchorsFound.length) {
+    anchorsEl.replaceChildren(el('div', 'anchors-empty', 'No anchors set. Add some in Settings.'));
+    return;
+  }
   anchorsEl.replaceChildren(...data.anchorsFound.map(a => {
     const dot = el('div', 'anchor-dot');
     dot.style.background = colorFor(a.color);
@@ -85,6 +86,7 @@ function refreshPreview() {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 $('version').textContent = `v${chrome.runtime.getManifest().version}`;
+$('options-btn').addEventListener('click', () => chrome.runtime.openOptionsPage());
 refreshPreview();
 
 btn.addEventListener('click', () => {

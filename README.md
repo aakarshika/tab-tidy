@@ -45,26 +45,26 @@ Works in Chrome and other Chromium browsers (Edge, Brave, Arc) that support Mani
 
 ## Configure
 
-All settings live in [`src/config.js`](src/config.js). The defaults are the author's own setup, so you'll probably want to change them.
+The defaults are the author's own setup, so you'll probably want to change them. Click **Settings** in the popup (or right-click the toolbar icon and choose **Options**) to:
 
-```js
-export const PINNED_ANCHORS = [
-  { name: 'Gmail',    match: 'mail.google.com', url: 'https://mail.google.com', color: 'blue' },
-  { name: 'Calendar', match: 'calendar.google.com', url: 'https://calendar.google.com', color: 'green' },
-];
+- add, remove and reorder your **pinned anchors**, and pick a color for each;
+- edit the **first unpinned tab**, or turn it off;
+- **reset to defaults**.
 
-// Set to null if you don't want a tab placed after the pins.
-export const FIRST_UNPINNED_TAB = null;
-```
+Changes apply from the next cleanup; there's no need to reload the extension.
 
-| Field   | Meaning |
-| ------- | ------- |
-| `name`  | Label shown in the popup. |
-| `match` | Host, optionally followed by a path prefix (`claude.ai/design`). If several anchors match one tab, the longest pattern wins. |
-| `url`   | What to open when no tab matches. |
-| `color` | One of Chrome's tab group colors: `grey`, `blue`, `red`, `yellow`, `green`, `pink`, `purple`, `cyan`, `orange`. |
+Each anchor has these fields:
 
-After editing, click the reload icon on Tab Tidy's card in `chrome://extensions`.
+| Field         | Meaning |
+| ------------- | ------- |
+| Name          | Label shown in the popup. |
+| Match         | Host, optionally followed by a path prefix, without `https://`: `mail.google.com`, `claude.ai/design`. If several anchors match one tab, the longest pattern wins. |
+| URL to open   | What to open when no tab matches. It has to fit the Match pattern, so the tab it opens counts as the anchor. |
+| Color         | One of Chrome's tab group colors: grey, blue, red, yellow, green, pink, purple, cyan or orange. |
+
+The options page checks your input before saving. For example, it rejects two anchors with the same pattern, because the second one would be re-opened on every cleanup.
+
+Settings are saved with `chrome.storage.sync`, so they follow you to other computers if Chrome sync is on. The defaults themselves live in [`src/config.js`](src/config.js): they're used until you save your own settings and again after **Reset to defaults**. Edit that file only if you're changing the defaults for everyone, for example in a fork.
 
 ## Permissions
 
@@ -72,23 +72,27 @@ After editing, click the reload icon on Tab Tidy's card in `chrome://extensions`
 | ----------- | --- |
 | `tabs`      | Read tab URLs to match anchors, find duplicates and group by domain. |
 | `tabGroups` | Create, name and color the per-domain tab groups. |
+| `storage`   | Save your settings from the options page (synced by Chrome if you have sync on). |
 
-Tab Tidy makes no network requests and stores no data.
+Tab Tidy makes no network requests. The only data it stores is your settings.
 
 ## Project structure
 
 ```
 src/                      ← the extension (load this folder in Chrome)
 ├── manifest.json
-├── config.js             ← user settings
+├── config.js             ← default settings
+├── settings.js           ← settings defaults and validation (unit tested)
 ├── background/
 │   ├── index.js          ← service worker entry: message handler
 │   ├── tidy.js           ← the cleanup steps, in order
 │   ├── preview.js        ← read-only summary for the popup
 │   ├── grouping.js       ← per-domain tab groups
 │   ├── matching.js       ← pure URL helpers (unit tested)
+│   ├── storage.js        ← loads and saves settings (chrome.storage.sync)
 │   └── tabs.js           ← chrome.tabs / chrome.windows wrappers
 ├── popup/                ← toolbar popup UI
+├── options/              ← options page UI
 └── icons/
 test/                     ← unit tests (node --test)
 scripts/                  ← manifest check and release packaging

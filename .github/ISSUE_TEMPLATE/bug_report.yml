@@ -42,10 +42,11 @@ body:
   - type: dropdown
     id: config
     attributes:
-      label: Did you change src/config.js?
+      label: Did you change Tab Tidy's settings?
       options:
-        - No, default config
-        - Yes (please paste the relevant part below)
+        - No, default settings
+        - Yes, on the options page (please describe the relevant anchors below)
+        - Yes, by editing src/config.js (please paste the relevant part below)
   - type: textarea
     id: extra
     attributes:

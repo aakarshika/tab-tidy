@@ -29,6 +29,7 @@ if (!versionOk) errors.push(`version "${manifest.version}" is not a valid Chrome
 const referenced = [
   manifest.background?.service_worker,
   manifest.action?.default_popup,
+  manifest.options_ui?.page,
   ...Object.values(manifest.icons ?? {}),
   ...Object.values(manifest.action?.default_icon ?? {}),
 ].filter(Boolean);

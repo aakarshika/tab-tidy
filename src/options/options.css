@@ -1,0 +1,195 @@
+/* Same look as the popup (popup/popup.css): system font, near-black text,
+   light grey cards, small uppercase section labels. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #fff;
+  color: #111;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* A fixed width, not centered: Chrome sizes the embedded options dialog
+   (chrome://extensions → Extension options) from the page's preferred width,
+   but lays the page out in a wider frame, so auto margins push it off-screen. */
+.page {
+  width: 600px;
+  max-width: 100vw;
+  padding: 20px 20px 24px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.header-left { display: flex; align-items: center; gap: 8px; }
+.logo {
+  width: 26px; height: 26px;
+  background: #111;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: #fff; font-weight: 600;
+  letter-spacing: -1px;
+}
+h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+.version { font-size: 10px; color: #aaa; }
+
+/* ── Sections ── */
+.section { margin-bottom: 20px; }
+.section-label {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: #999; margin-bottom: 6px;
+}
+.hint { font-size: 12px; color: #666; margin-bottom: 10px; }
+.hint code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  background: #f2f2f2;
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+.empty {
+  font-size: 12px; color: #999;
+  background: #f6f6f6;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+/* ── Cards ── */
+.anchors { list-style: none; }
+.card {
+  background: #f6f6f6;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 12px 4px;
+  margin-bottom: 8px;
+}
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+.anchor-pos {
+  font-size: 10px; font-weight: 600;
+  color: #aaa;
+  min-width: 12px;
+}
+.anchor-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.anchor-title {
+  flex: 1;
+  font-size: 13px; font-weight: 500; color: #333;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.card-actions { display: flex; gap: 2px; }
+
+/* ── Fields ── */
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 10px;
+}
+.field { min-width: 0; }
+.field-wide { grid-column: 1 / -1; }
+.field-label {
+  display: block;
+  font-size: 11px; color: #777;
+  margin-bottom: 3px;
+}
+.field input[type="text"],
+.field input[type="url"],
+.field select {
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  color: #111;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 5px 8px;
+  height: 30px;
+}
+.field select { padding: 4px 6px; }
+.field input:focus,
+.field select:focus {
+  outline: 2px solid rgba(17, 17, 17, 0.14);
+  border-color: #111;
+}
+.field [aria-invalid="true"] { border-color: #c62828; }
+.field [aria-invalid="true"]:focus { outline-color: rgba(198, 40, 40, 0.18); }
+.field-error {
+  min-height: 16px;
+  font-size: 11px; color: #c62828;
+  padding: 1px 0 3px;
+}
+fieldset:disabled .field-label,
+fieldset:disabled input { opacity: 0.5; }
+
+.toggle {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; color: #333;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+.toggle input { accent-color: #111; width: 14px; height: 14px; }
+
+/* ── Buttons ── */
+.btn {
+  font: inherit;
+  font-size: 13px; font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+}
+.btn:focus-visible,
+.icon-btn:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; }
+.btn-primary { background: #111; color: #fff; }
+.btn-primary:hover:not(:disabled)  { opacity: 0.82; }
+.btn-primary:active:not(:disabled) { opacity: 0.65; }
+.btn-secondary { background: #f2f2f2; color: #333; }
+.btn-secondary:hover:not(:disabled) { background: #e8e8e8; }
+.btn-secondary.armed { background: #fce4ec; color: #c62828; }
+
+.icon-btn {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font: inherit; font-size: 12px; font-weight: 600;
+  color: #888;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.icon-btn:hover:not(:disabled) { background: #e8e8e8; color: #111; }
+.icon-btn:disabled { opacity: 0.3; cursor: default; }
+.icon-btn-remove:hover:not(:disabled) { background: #fce4ec; color: #c62828; }
+
+/* ── Footer ── */
+.form-errors { font-size: 12px; color: #c62828; }
+.form-errors p { margin-bottom: 8px; }
+.actions {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+.status { font-size: 12px; color: #999; }
+.status-ok    { color: #2e7d32; }
+.status-error { color: #c62828; }
+
+@media (max-width: 480px) {
+  .fields { grid-template-columns: 1fr; }
+}

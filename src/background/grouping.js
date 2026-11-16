@@ -1,13 +1,13 @@
-import { DOMAIN_GROUP_COLORS } from '../config.js';
 import { getRootDomain, isInternalUrl } from './matching.js';
 import { safeUngroup } from './tabs.js';
 
 /**
  * Regroups the unpinned tabs of a window: one tab group per root domain that
  * has 2+ tabs. Existing groups are dissolved first so every run starts clean.
+ * `colors` (Chrome color tokens) are cycled through, one per group.
  * Returns [{ domain, count, color }] for the groups that were created.
  */
-export async function groupTabsByDomain(windowId) {
+export async function groupTabsByDomain(windowId, colors) {
   const unpinned = await chrome.tabs.query({ windowId, pinned: false });
 
   const grouped = unpinned.filter(t => t.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE);
@@ -28,7 +28,7 @@ export async function groupTabsByDomain(windowId) {
   for (const [domain, tabIds] of domainMap) {
     if (tabIds.length < 2) continue; // only group if 2+ tabs share a domain
 
-    const color = DOMAIN_GROUP_COLORS[colorIdx % DOMAIN_GROUP_COLORS.length];
+    const color = colors[colorIdx % colors.length];
     try {
       const groupId = await chrome.tabs.group({ tabIds, createProperties: { windowId } });
       await chrome.tabGroups.update(groupId, { title: domain, color, collapsed: false });

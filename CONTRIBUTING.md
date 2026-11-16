@@ -37,18 +37,21 @@ After changing code, click the reload icon on Tab Tidy's card. Popup changes sho
 
 | Path | What lives there |
 | ---- | ---------------- |
-| `src/config.js` | User settings: anchors, first tab, group colors. |
+| `src/config.js` | Default settings: anchors, first tab, group colors. Users change their own on the options page. |
+| `src/settings.js` | Settings defaults, validation and merging with stored values. Pure, has unit tests. |
 | `src/background/tidy.js` | The cleanup, one numbered step at a time. Start reading here. |
 | `src/background/matching.js` | Pure URL logic with no `chrome.*` calls. Has unit tests. |
 | `src/background/tabs.js` | Small wrappers around `chrome.tabs` / `chrome.windows`. |
+| `src/background/storage.js` | Loads and saves settings in `chrome.storage.sync`. |
 | `src/background/grouping.js` | Per-domain tab groups. |
 | `src/background/preview.js` | Read-only summary shown when the popup opens. |
 | `src/background/index.js` | Service worker entry point and message handler. |
 | `src/popup/` | Popup HTML, CSS and JS. |
+| `src/options/` | Options page HTML, CSS and JS. |
 | `test/` | Unit tests, run with Node's built-in test runner. |
 | `scripts/` | Manifest check and release packaging. |
 
-The popup and service worker talk through `chrome.runtime.sendMessage` with two actions, `preview` and `tidy` (see `src/background/index.js`).
+The popup and service worker talk through `chrome.runtime.sendMessage` with two actions, `preview` and `tidy` (see `src/background/index.js`). The options page saves settings to `chrome.storage.sync`, and the service worker reads them again for every preview and cleanup.
 
 ## Before you open a pull request
 
@@ -68,7 +71,7 @@ Most of the extension talks to Chrome APIs that the unit tests can't reach, so *
 - [ ] One anchor site not open at all.
 - [ ] Three or more tabs from the same domain (e.g. `github.com`).
 - [ ] Run cleanup: one window remains, anchors are pinned in config order, duplicates are gone, domain groups appear and the popup log matches what happened.
-- [ ] If you touched `FIRST_UNPINNED_TAB` handling, also try it set to `null`.
+- [ ] If you touched settings or the options page: change, reorder and remove anchors there, save, and check that the next cleanup follows them. Also try it with the first unpinned tab turned off.
 
 ## Guidelines
 
@@ -76,7 +79,7 @@ Most of the extension talks to Chrome APIs that the unit tests can't reach, so *
 - **Put new pure logic in `matching.js`** (or a new module without `chrome.*` calls) and add tests for it in `test/`.
 - **Be careful with permissions.** Adding a permission changes the install warning for every user. Explain why in the PR.
 - **Never use `innerHTML` with tab data.** Page titles and URLs come from websites. Build DOM nodes and set `textContent` (see `el()` in `popup.js`).
-- **Keep your personal config out of PRs.** If you've customized `src/config.js` for your own browsing, leave those changes out unless the PR is about the defaults.
+- **Keep your personal config out of PRs.** Use the options page for your own setup. Only change `src/config.js` when the PR is about the defaults.
 - **Small, focused PRs** are much easier to review than large ones.
 - **Update [CHANGELOG.md](CHANGELOG.md)** under *Unreleased* for any user-visible change.
 
