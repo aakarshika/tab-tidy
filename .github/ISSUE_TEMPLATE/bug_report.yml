@@ -1,0 +1,53 @@
+name: Bug report
+description: Something Tab Tidy did (or didn't do) that it shouldn't have
+labels: [bug]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did the cleanup do, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Which windows and tabs were open before you ran the cleanup? Use example.com URLs if your real ones are private.
+      placeholder: |
+        1. Two windows open, three github.com tabs and one pinned youtube.com tab
+        2. Run cleanup
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Popup log
+      description: Copy the "What happened" lines from the popup, if any.
+      render: text
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Chrome 142 on macOS
+    validations:
+      required: true
+  - type: input
+    id: extension-version
+    attributes:
+      label: Tab Tidy version
+      description: Shown in the top-right corner of the popup.
+      placeholder: v1.1
+  - type: dropdown
+    id: config
+    attributes:
+      label: Did you change src/config.js?
+      options:
+        - No, default config
+        - Yes (please paste the relevant part below)
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Config snippet, screenshots, service worker console errors…

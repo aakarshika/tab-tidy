@@ -1,0 +1,26 @@
+{
+  "name": "tab-tidy",
+  "private": true,
+  "description": "Chrome extension that merges windows, removes duplicate tabs, groups by domain, and keeps your pinned tabs in order.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aakarshika/tab-tidy.git"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "node --test",
+    "check:manifest": "node scripts/check-manifest.js",
+    "check": "npm run lint && npm test && npm run check:manifest",
+    "package": "node scripts/package.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0"
+  }
+}

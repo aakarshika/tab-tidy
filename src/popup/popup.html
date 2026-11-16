@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tab Tidy</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">⌥</div>
+      <h1>Tab Tidy</h1>
+    </div>
+    <span class="version" id="version"></span>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="win-count">—</div>
+      <div class="stat-label">windows</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="tab-count">—</div>
+      <div class="stat-label">tabs</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="pin-count">—</div>
+      <div class="stat-label">pinned</div>
+    </div>
+  </div>
+
+  <div class="section-label">Anchor tabs</div>
+  <div class="anchors" id="anchors-list"></div>
+
+  <button class="btn-tidy" id="tidy-btn">
+    <div class="spinner" id="spinner"></div>
+    <span id="btn-label">Run cleanup</span>
+  </button>
+
+  <div class="log" id="log">
+    <div class="section-label section-label-tight">What happened</div>
+    <div class="log-inner" id="log-inner"></div>
+  </div>
+
+  <div class="groups" id="groups-section">
+    <div class="section-label section-label-tight">Tab groups created</div>
+    <div class="groups-grid" id="groups-grid"></div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
