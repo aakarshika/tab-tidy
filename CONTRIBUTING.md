@@ -41,6 +41,7 @@ After changing code, click the reload icon on Tab Tidy's card. Popup changes sho
 | `src/settings.js` | Settings defaults, validation and merging with stored values. Pure, has unit tests. |
 | `src/background/tidy.js` | The cleanup, one numbered step at a time. Start reading here. |
 | `src/background/matching.js` | Pure URL logic with no `chrome.*` calls. Has unit tests. |
+| `src/background/plan.js` | Pure decisions for a cleanup: what to pin, unpin, close and group. Has unit tests. |
 | `src/background/tabs.js` | Small wrappers around `chrome.tabs` / `chrome.windows`. |
 | `src/background/storage.js` | Loads and saves settings in `chrome.storage.sync`. |
 | `src/background/grouping.js` | Per-domain tab groups. |
@@ -67,16 +68,18 @@ Most of the extension talks to Chrome APIs that the unit tests can't reach, so *
 
 - [ ] Two or more windows open.
 - [ ] Duplicate tabs (same URL twice).
-- [ ] One anchor site open twice: once pinned, once unpinned.
+- [ ] One anchor site open three times: once pinned, twice unpinned on different pages.
 - [ ] One anchor site not open at all.
 - [ ] Three or more tabs from the same domain (e.g. `github.com`).
-- [ ] Run cleanup: one window remains, anchors are pinned in config order, duplicates are gone, domain groups appear and the popup log matches what happened.
+- [ ] A tab group you made yourself, in a window other than the focused one.
+- [ ] Run cleanup: one window remains, anchors are pinned in config order, only exact duplicates are gone (the anchor site's other pages are still open), your own group arrived intact, domain groups appear and the popup log matches what happened.
 - [ ] If you touched settings or the options page: change, reorder and remove anchors there, save, and check that the next cleanup follows them. Also try it with the first unpinned tab turned off.
 
 ## Guidelines
 
 - **Keep it dependency-free at runtime.** No frameworks, no bundler, no build step. `src/` must stay loadable as-is.
-- **Put new pure logic in `matching.js`** (or a new module without `chrome.*` calls) and add tests for it in `test/`.
+- **Never close anything but exact duplicates, and never dissolve a group the user made.** These rules live in `plan.js` and its tests.
+- **Put new pure logic in `matching.js` or `plan.js`** (or a new module without `chrome.*` calls) and add tests for it in `test/`.
 - **Be careful with permissions.** Adding a permission changes the install warning for every user. Explain why in the PR. Also update [PRIVACY.md](PRIVACY.md) and the justifications in [CHROMEWEBSTORE.md](CHROMEWEBSTORE.md).
 - **Never use `innerHTML` with tab data.** Page titles and URLs come from websites. Build DOM nodes and set `textContent` (see `el()` in `popup.js`).
 - **Keep your personal config out of PRs.** Use the options page for your own setup. Only change `src/config.js` when the PR is about the defaults, and keep them neutral: new installs start with no anchors and the first unpinned tab off, so a first cleanup never opens or closes sites the user didn't pick. A test in `test/settings.test.js` checks this.

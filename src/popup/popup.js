@@ -32,8 +32,10 @@ function setLoading(on) {
 }
 
 function badgeFor(pinned, unpinned) {
-  if (unpinned > 0) return el('span', 'badge badge-active', `${unpinned} active tab${unpinned > 1 ? 's' : ''}`);
+  // A pinned site can also have other tabs open; those are left alone, so it
+  // still counts as pinned.
   if (pinned   > 0) return el('span', 'badge badge-pinned', 'pinned');
+  if (unpinned > 0) return el('span', 'badge badge-active', `${unpinned} active tab${unpinned > 1 ? 's' : ''}`);
   return el('span', 'badge badge-missing', 'missing');
 }
 

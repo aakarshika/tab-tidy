@@ -37,12 +37,12 @@ Too many windows, the same page open three times, the sites you use every day sc
 • Merges all your windows into one
 • Closes duplicate tabs (tabs with exactly the same address)
 • Keeps the sites you always use pinned, in your order, and reopens any that are missing
-• Groups the rest of your tabs by website, each in its own colored tab group
+• Groups the rest of your tabs by website, each in its own colored tab group. Groups you made yourself are left exactly as they are
 • Optionally keeps one tab, such as a local dev server, right after your pinned tabs
 
-Pick your pinned sites on the Settings page: add, reorder and color them. If one of them is open in more than one tab, Tab Tidy keeps the tab you were using and closes the extra copies. Settings sync to your other computers through Chrome.
+Pick your pinned sites on the Settings page: add, reorder and color them. If one of them is open in more than one tab, Tab Tidy pins one and leaves the others open. Settings sync to your other computers through Chrome.
 
-Safe by default: a new install has no pinned sites, so your first cleanup never opens or closes a site you didn't choose. The popup shows your windows, tabs and pinned sites before you run a cleanup, and a log of everything that changed afterwards. Closed a tab you wanted? Ctrl+Shift+T (Cmd+Shift+T on Mac) brings it back.
+Safe by design: the only tabs Tab Tidy ever closes are exact duplicates, and a new install has no pinned sites, so your first cleanup never opens a site you didn't choose. The popup shows your windows, tabs and pinned sites before you run a cleanup, and a log of everything that changed afterwards. Closed a tab you wanted? Ctrl+Shift+T (Cmd+Shift+T on Mac) brings it back.
 
 Private by design: Tab Tidy runs entirely in your browser. No accounts, no analytics, no network requests, no data collection. It uses only three permissions: tabs, tab groups and storage.
 
@@ -83,7 +83,7 @@ Tab Tidy reads the URL of each open tab to find duplicate tabs, recognize the si
 **`tabGroups`**
 
 ```text
-Used to create, name and color one tab group per website when the user runs a cleanup, and to clear the existing groups in that window first so every cleanup starts from a clean slate.
+Used to create, name and color one tab group per website when the user runs a cleanup, and to move whole tab groups between windows when merging them, so the user's own groups arrive intact. Tab Tidy never removes or changes groups the user made.
 ```
 
 **`storage`**

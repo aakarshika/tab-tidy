@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - [Privacy policy](PRIVACY.md) and Chrome Web Store listing materials ([CHROMEWEBSTORE.md](CHROMEWEBSTORE.md), images in `store/`).
 
+### Fixed
+- Cleanups no longer close other tabs from an anchor's site. The copy you used most recently is pinned and the rest stay open; older pins are unpinned instead of closed. Running a cleanup again leaves the pins as they are. Only exact duplicates are ever closed.
+- Cleanups no longer remove your tab groups. Merging windows moves whole groups so they arrive intact, loose tabs join the group an earlier cleanup made for their site, and groups you made yourself are left alone.
+- The first unpinned tab is no longer pulled into a domain group, so it stays right after the pinned tabs.
+
 ### Changed
 - Clearer extension description, which is also the Chrome Web Store summary.
 - The 128 px icon now has the transparent padding Chrome recommends, so it no longer looks oversized next to other extensions.

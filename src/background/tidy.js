@@ -1,11 +1,15 @@
 import { groupTabsByDomain } from './grouping.js';
 import { anchorIndexFor } from './matching.js';
+import { planAnchors, planDuplicates } from './plan.js';
 import { loadSettings } from './storage.js';
-import { getAllData, pickPrimary, safeClose, safeMove, safeUpdate } from './tabs.js';
+import { getAllData, pickPrimary, safeClose, safeMove, safeMoveGroup, safeUngroup, safeUpdate } from './tabs.js';
 
 /**
  * Runs the full cleanup. Returns { success, log, groups } where `log` is a
  * list of { icon, color, text } lines rendered by the popup.
+ *
+ * Safety rule (see plan.js): the only tabs ever closed are exact duplicates,
+ * and tab groups the user made are never dissolved.
  */
 export async function tidyTabs() {
   const log = [];
@@ -17,70 +21,51 @@ export async function tidyTabs() {
     return { success: true, log: [{ icon: '!', color: 'amber', text: 'No windows found.' }], groups: [] };
   }
 
-  const primary     = pickPrimary(windows);
-  const tabsToClose = new Set();
-  const tabsToPin   = new Set();
-  const anchorDone  = new Set();
+  const primary = pickPrimary(windows);
+  const NO_GROUP = chrome.tabGroups.TAB_GROUP_ID_NONE;
 
   // ── 1. Resolve anchors ────────────────────────────────────────────────────
-  // Prefer a tab the user is actively using (unpinned) over an old pin.
-  for (let i = 0; i < anchors.length; i++) {
-    const anchor   = anchors[i];
-    const matches  = allTabs.filter(t => anchorIndex(t.url) === i);
-    const pinned   = matches.filter(t =>  t.pinned);
-    const unpinned = matches.filter(t => !t.pinned);
-
-    if (unpinned.length > 0) {
-      tabsToPin.add(unpinned[0].id);
-      anchorDone.add(i);
-      pinned.forEach(t            => tabsToClose.add(t.id));
-      unpinned.slice(1).forEach(t => tabsToClose.add(t.id));
-      log.push({ icon: '↑', color: 'amber', text: `${anchor.name}: active tab → pin, ${pinned.length} old pin(s) closed` });
-    } else if (pinned.length > 0) {
-      tabsToPin.add(pinned[0].id);
-      anchorDone.add(i);
-      pinned.slice(1).forEach(t => tabsToClose.add(t.id));
-      log.push({ icon: '✓', color: 'green', text: `${anchor.name}: existing pin kept` });
-    } else {
-      log.push({ icon: '+', color: 'blue', text: `${anchor.name}: not found, will open & pin` });
-    }
+  // One pin per anchor, preferring the copy you were using over an old pin.
+  // Other tabs from that site stay open; older pins are unpinned, not closed.
+  const anchorPlan = planAnchors(allTabs, anchors);
+  for (const note of anchorPlan.notes) {
+    const { name } = anchors[note.index];
+    const extra = note.extraPins ? `, ${note.extraPins} older pin(s) unpinned` : '';
+    if (note.kind === 'promoted')  log.push({ icon: '↑', color: 'amber', text: `${name}: active tab → pin${extra}` });
+    else if (note.kind === 'kept') log.push({ icon: '✓', color: 'green', text: `${name}: existing pin kept${extra}` });
+    else                           log.push({ icon: '+', color: 'blue',  text: `${name}: not found, will open & pin` });
   }
 
-  // ── 2. Deduplicate unpinned tabs ──────────────────────────────────────────
-  const seenUrls = new Set(
-    allTabs.filter(t => tabsToPin.has(t.id)).map(t => t.url)
-  );
-  let dupes = 0;
-  for (const tab of allTabs) {
-    if (tab.pinned || tabsToClose.has(tab.id) || tabsToPin.has(tab.id)) continue;
-    if (anchorIndex(tab.url) !== -1) continue;
-    const key = tab.url || String(tab.id);
-    if (seenUrls.has(key)) { tabsToClose.add(tab.id); dupes++; }
-    else seenUrls.add(key);
-  }
-  if (dupes > 0) log.push({ icon: '✕', color: 'red', text: `${dupes} duplicate tab(s) removed` });
+  // ── 2. Find exact duplicates ──────────────────────────────────────────────
+  const tabsToClose = planDuplicates(allTabs, anchorPlan);
+  if (tabsToClose.size > 0) log.push({ icon: '✕', color: 'red', text: `${tabsToClose.size} duplicate tab(s) removed` });
 
   // ── 3. Merge windows ──────────────────────────────────────────────────────
+  // Tab groups move as a whole so they arrive intact; loose tabs follow.
   let moved = 0;
   for (const win of windows) {
     if (win.id === primary.id) continue;
+    const movedGroups = new Set();
+    for (const groupId of new Set(win.tabs.map(t => t.groupId).filter(id => id !== NO_GROUP))) {
+      if (await safeMoveGroup(groupId, { windowId: primary.id, index: -1 })) movedGroups.add(groupId);
+    }
     for (const tab of win.tabs) {
       if (tabsToClose.has(tab.id)) continue;
-      await safeMove(tab.id, { windowId: primary.id, index: -1 });
+      if (!movedGroups.has(tab.groupId)) await safeMove(tab.id, { windowId: primary.id, index: -1 });
       moved++;
     }
   }
   if (moved > 0) log.push({ icon: '⊞', color: 'purple', text: `${moved} tab(s) merged into main window` });
 
-  // ── 4. Close stale tabs ───────────────────────────────────────────────────
+  // ── 4. Close duplicates ───────────────────────────────────────────────────
   await safeClose([...tabsToClose]);
 
-  // ── 5. Pin the winners ────────────────────────────────────────────────────
-  for (const id of tabsToPin) await safeUpdate(id, { pinned: true });
+  // ── 5. Pin the anchors, unpin older pins ──────────────────────────────────
+  for (const id of anchorPlan.unpin) if (!tabsToClose.has(id)) await safeUpdate(id, { pinned: false });
+  for (const id of anchorPlan.pin) await safeUpdate(id, { pinned: true });
 
   // ── 6. Open missing anchors ───────────────────────────────────────────────
-  for (let i = 0; i < anchors.length; i++) {
-    if (anchorDone.has(i)) continue;
+  for (const i of anchorPlan.missing) {
     const anchor = anchors[i];
     await chrome.tabs.create({ url: anchor.url, pinned: true, windowId: primary.id });
     log.push({ icon: '+', color: 'blue', text: `${anchor.name}: opened & pinned` });
@@ -94,26 +79,31 @@ export async function tidyTabs() {
   }
 
   // ── 8. First unpinned tab (optional) ──────────────────────────────────────
+  // It stands on its own right after the pins, so it's kept out of groups.
+  let firstTabId = null;
   if (firstTab.enabled) {
     const freshAll    = await chrome.tabs.query({ windowId: primary.id });
     const pinnedCount = freshAll.filter(t => t.pinned).length;
     const devTab      = freshAll.find(t => t.url && t.url.includes(firstTab.match));
 
     if (devTab) {
+      if (devTab.groupId !== NO_GROUP) await safeUngroup([devTab.id]);
       await safeMove(devTab.id, { windowId: primary.id, index: pinnedCount });
+      firstTabId = devTab.id;
       log.push({ icon: '⊡', color: 'teal', text: `${firstTab.name} → first unpinned slot` });
     } else {
-      await chrome.tabs.create({ url: firstTab.url, windowId: primary.id, index: pinnedCount });
+      const created = await chrome.tabs.create({ url: firstTab.url, windowId: primary.id, index: pinnedCount });
+      firstTabId = created.id;
       log.push({ icon: '+', color: 'blue', text: `${firstTab.name}: opened as first unpinned` });
     }
   }
 
-  // ── 9. Group unpinned tabs by domain ──────────────────────────────────────
-  const groups = await groupTabsByDomain(primary.id, domainGroupColors);
-  if (groups.length > 0) {
-    log.push({ icon: '⬡', color: 'cyan', text: `${groups.length} domain group(s) created` });
-  }
+  // ── 9. Group loose tabs by domain ─────────────────────────────────────────
+  // Existing groups are left exactly as they are.
+  const { created, added } = await groupTabsByDomain(primary.id, domainGroupColors, new Set([firstTabId]));
+  if (created.length > 0) log.push({ icon: '⬡', color: 'cyan', text: `${created.length} domain group(s) created` });
+  if (added > 0)          log.push({ icon: '⬡', color: 'cyan', text: `${added} tab(s) added to existing groups` });
 
   log.push({ icon: '✔', color: 'done', text: 'Done!' });
-  return { success: true, log, groups };
+  return { success: true, log, groups: created };
 }

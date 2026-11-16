@@ -1,33 +1,32 @@
-import { getRootDomain, isInternalUrl } from './matching.js';
-import { safeUngroup } from './tabs.js';
+import { planGrouping } from './plan.js';
 
 /**
- * Regroups the unpinned tabs of a window: one tab group per root domain that
- * has 2+ tabs. Existing groups are dissolved first so every run starts clean.
- * `colors` (Chrome color tokens) are cycled through, one per group.
- * Returns [{ domain, count, color }] for the groups that were created.
+ * Groups the loose (ungrouped, unpinned) tabs of a window by website, without
+ * touching existing groups. See planGrouping in plan.js for the rules.
+ * `colors` (Chrome color tokens) are cycled through for new groups, and tabs
+ * in `skip` are left alone.
+ *
+ * Returns { created: [{ domain, count, color }], added } where `added` is the
+ * number of tabs that joined groups from earlier cleanups.
  */
-export async function groupTabsByDomain(windowId, colors) {
-  const unpinned = await chrome.tabs.query({ windowId, pinned: false });
+export async function groupTabsByDomain(windowId, colors, skip = new Set()) {
+  const tabs   = await chrome.tabs.query({ windowId, pinned: false });
+  const groups = await chrome.tabGroups.query({ windowId });
+  const { extend, create } = planGrouping(tabs, groups, skip);
 
-  const grouped = unpinned.filter(t => t.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE);
-  await safeUngroup(grouped.map(t => t.id));
-
-  // domain → tab IDs
-  const domainMap = new Map();
-  for (const tab of unpinned) {
-    if (isInternalUrl(tab.url)) continue;
-    const domain = getRootDomain(tab.url);
-    if (!domainMap.has(domain)) domainMap.set(domain, []);
-    domainMap.get(domain).push(tab.id);
+  let added = 0;
+  for (const { groupId, tabIds } of extend) {
+    try {
+      await chrome.tabs.group({ groupId, tabIds });
+      added += tabIds.length;
+    } catch {
+      // The group or a tab disappeared mid-run; leave these tabs loose.
+    }
   }
 
   const created = [];
   let colorIdx = 0;
-
-  for (const [domain, tabIds] of domainMap) {
-    if (tabIds.length < 2) continue; // only group if 2+ tabs share a domain
-
+  for (const { domain, tabIds } of create) {
     const color = colors[colorIdx % colors.length];
     try {
       const groupId = await chrome.tabs.group({ tabIds, createProperties: { windowId } });
@@ -39,5 +38,5 @@ export async function groupTabsByDomain(windowId, colors) {
     }
   }
 
-  return created;
+  return { created, added };
 }

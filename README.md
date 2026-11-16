@@ -15,18 +15,18 @@ No accounts, no network requests and no tracking: everything happens locally in 
 
 Click the toolbar icon and press **Run cleanup**:
 
-1. **Resolves your anchor tabs.** For each site in your anchor list it keeps one tab and pins it. If you were actively using an unpinned copy, that copy becomes the pin and stale pins are closed.
+1. **Resolves your anchor tabs.** For each site in your anchor list it pins one tab: the copy you used most recently. Other tabs from that site stay open as normal tabs, and older pins are unpinned, not closed.
 2. **Removes duplicates.** Unpinned tabs with exactly the same URL are closed, keeping the first one.
-3. **Merges windows.** Every tab moves into your focused window (or the biggest window if none is focused).
+3. **Merges windows.** Every tab moves into your focused window (or the biggest window if none is focused). Tab groups move as a whole, so they arrive intact.
 4. **Opens missing anchors.** Any anchor site without a tab gets opened and pinned.
 5. **Sorts pinned tabs** into the order you configured.
 6. **Places a "first" tab.** If you turn this on, a tab you choose (a local dev server, say) is placed right after the pins, and opened if it's missing.
-7. **Groups by domain.** Any root domain with 2 or more unpinned tabs gets its own colored tab group.
+7. **Groups by domain.** Loose tabs from a website with 2 or more of them get their own colored tab group, or join the group an earlier cleanup made for that site. Groups you made yourself are never changed.
 
 The popup shows a live summary (windows, tabs, pins and the state of each anchor) and a log of what changed.
 
 > [!WARNING]
-> A cleanup **closes tabs** (duplicates and extra copies of anchor sites). You can bring them back with <kbd>Ctrl/Cmd</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> or from Chrome's history.
+> A cleanup **closes exact duplicate tabs**: tabs with the same address as one that stays open. No other tab is ever closed. You can bring them back with <kbd>Ctrl/Cmd</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> or from Chrome's history.
 
 ## Install
 
@@ -97,6 +97,7 @@ src/                      ← the extension (load this folder in Chrome)
 │   ├── preview.js        ← read-only summary for the popup
 │   ├── grouping.js       ← per-domain tab groups
 │   ├── matching.js       ← pure URL helpers (unit tested)
+│   ├── plan.js           ← what to pin, close and group (unit tested)
 │   ├── storage.js        ← loads and saves settings (chrome.storage.sync)
 │   └── tabs.js           ← chrome.tabs / chrome.windows wrappers
 ├── popup/                ← toolbar popup UI

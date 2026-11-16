@@ -20,3 +20,8 @@ export async function safeClose(ids)        { if (ids.length) try { await chrome
 export async function safeMove(id, opts)    { try { await chrome.tabs.move(id, opts); } catch { /* tab already gone */ } }
 export async function safeUpdate(id, props) { try { await chrome.tabs.update(id, props); } catch { /* tab already gone */ } }
 export async function safeUngroup(ids)      { if (ids.length) try { await chrome.tabs.ungroup(ids); } catch { /* tab already gone */ } }
+
+/** Moves a whole tab group, keeping it intact. Returns false if it couldn't. */
+export async function safeMoveGroup(groupId, opts) {
+  try { await chrome.tabGroups.move(groupId, opts); return true; } catch { return false; }
+}
