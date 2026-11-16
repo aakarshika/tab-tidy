@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tab Tidy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "One click to merge windows, close duplicate tabs, keep your favorite sites pinned in order and group tabs by domain.",
   "homepage_url": "https://github.com/aakarshika/tab-tidy",
   "permissions": ["tabs", "tabGroups", "storage"],

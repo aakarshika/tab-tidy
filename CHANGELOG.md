@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.0.2] - 2026-11-15
+
 ### Added
 - [Privacy policy](PRIVACY.md) and Chrome Web Store listing materials ([CHROMEWEBSTORE.md](CHROMEWEBSTORE.md), images in `store/`).
 
@@ -30,5 +32,6 @@ First public release.
 - New installs start with no anchors and the first unpinned tab off, so a first cleanup never opens or closes sites you didn't choose. The Settings page opens once on install so you can add your own.
 - Uses only the `tabs`, `tabGroups` and `storage` permissions. No network requests, no data collection.
 
-[Unreleased]: https://github.com/aakarshika/tab-tidy/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/aakarshika/tab-tidy/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/aakarshika/tab-tidy/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/aakarshika/tab-tidy/releases/tag/v0.0.1
