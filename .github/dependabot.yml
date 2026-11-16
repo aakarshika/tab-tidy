@@ -4,6 +4,9 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    commit-message:
+      prefix: build
+      include: scope
     groups:
       dev-dependencies:
         patterns: ["*"]
@@ -12,3 +15,6 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    commit-message:
+      prefix: ci
+      include: scope

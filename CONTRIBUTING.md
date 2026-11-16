@@ -85,11 +85,64 @@ Most of the extension talks to Chrome APIs that the unit tests can't reach, so *
 
 Code style is enforced by ESLint and [`.editorconfig`](.editorconfig): 2-space indentation, ES modules, `const` by default. Vertically aligning related lines is welcome where it helps readability.
 
+## Commit messages
+
+Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). Pull request titles use the same format.
+
+```
+<type>(<scope>): <summary>
+
+<body>
+
+<footer>
+```
+
+**Type** says what kind of change it is:
+
+| Type       | Use it for |
+| ---------- | ---------- |
+| `feat`     | A new feature users can see. |
+| `fix`      | A bug fix users can notice. |
+| `docs`     | Documentation only: README, CONTRIBUTING, CHANGELOG, comments. |
+| `refactor` | Code changes that don't change behavior. |
+| `test`     | Adding or fixing tests only. |
+| `ci`       | GitHub Actions workflows and Dependabot. |
+| `build`    | Packaging, npm scripts and dev dependencies. |
+| `chore`    | Other housekeeping, such as `.gitignore`, issue templates or a release commit. |
+
+**Scope** is optional and names the area you touched: `background`, `popup`, `options`, `settings`, `manifest`, `readme`, `contributing`, `deps` or `release`. Leave it out when a change spans several areas.
+
+**Summary** rules:
+
+- Imperative mood: "add", not "added" or "adds".
+- Lowercase first letter, no full stop at the end.
+- Keep the whole first line within 72 characters.
+
+**Body** is optional for small changes and expected for anything bigger. Leave a blank line after the summary and wrap lines at 72 characters. Explain why the change is needed and what users will notice; the diff already shows what changed line by line.
+
+**Footer** holds trailers such as `Fixes #12` or `Co-authored-by: Name <email>`.
+
+**Breaking changes** get a `!` after the type or scope plus a `BREAKING CHANGE:` footer. For Tab Tidy that means things like dropping a permission users rely on or a settings change that loses saved settings.
+
+Keep one logical change per commit. Commits typed `feat` or `fix`, or marked with `!`, almost always need a line in [CHANGELOG.md](CHANGELOG.md) too.
+
+Examples:
+
+```
+feat(options): add options page for anchors and first unpinned tab
+fix(popup): show the "No windows found" message
+docs(readme): document the storage permission
+refactor(background): split tidy steps into helpers
+ci: run the manifest check on pull requests
+build(deps-dev): bump eslint from 10.15.0 to 10.16.0
+chore(release): v1.2
+```
+
 ## Releasing (maintainers)
 
 1. Bump `version` in `src/manifest.json`.
 2. Move the *Unreleased* entries in `CHANGELOG.md` under the new version.
-3. Commit, then tag: `git tag v1.2 && git push --tags`.
+3. Commit as `chore(release): v1.2`, then tag: `git tag v1.2 && git push --tags`.
 4. Run `npm run package` and attach `dist/tab-tidy-<version>.zip` to the GitHub release (and upload it to the Chrome Web Store, if published there).
 
 ## License

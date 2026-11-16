@@ -11,6 +11,7 @@
 
 ## Checklist
 
+- [ ] PR title and commits follow the [commit message format](https://github.com/aakarshika/tab-tidy/blob/main/CONTRIBUTING.md#commit-messages)
 - [ ] Updated `CHANGELOG.md` under *Unreleased* (for user-visible changes)
 - [ ] No personal changes to `src/config.js` included
 - [ ] No new permissions, or explained why they're needed above
