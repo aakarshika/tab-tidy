@@ -5,6 +5,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Added
+- [Privacy policy](PRIVACY.md) and Chrome Web Store listing materials ([CHROMEWEBSTORE.md](CHROMEWEBSTORE.md), images in `store/`).
+
+### Changed
+- Clearer extension description, which is also the Chrome Web Store summary.
+- The 128 px icon now has the transparent padding Chrome recommends, so it no longer looks oversized next to other extensions.
+
 ## [0.0.1] - 2026-11-15
 
 First public release.

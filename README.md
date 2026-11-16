@@ -82,7 +82,7 @@ Settings are saved with `chrome.storage.sync`, so they follow you to other compu
 | `tabGroups` | Create, name and color the per-domain tab groups. |
 | `storage`   | Save your settings from the options page (synced by Chrome if you have sync on). |
 
-Tab Tidy makes no network requests. The only data it stores is your settings.
+Tab Tidy makes no network requests. The only data it stores is your settings. See the [privacy policy](PRIVACY.md).
 
 ## Project structure
 
@@ -105,6 +105,7 @@ src/                      ← the extension (load this folder in Chrome)
 test/                     ← unit tests (node --test)
 scripts/                  ← manifest check and release packaging
 docs/                     ← images for this README
+store/                    ← Chrome Web Store images (see CHROMEWEBSTORE.md)
 ```
 
 There is no build step: the files in `src/` are exactly what Chrome runs. Node is only used for linting, tests and packaging.
