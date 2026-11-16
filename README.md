@@ -30,17 +30,22 @@ The popup shows a live summary (windows, tabs, pins and the state of each anchor
 
 ## Install
 
-Tab Tidy isn't on the Chrome Web Store yet, so you install it from source:
+Tab Tidy isn't on the Chrome Web Store yet, so you load it into Chrome yourself. It takes about a minute:
 
-1. Clone this repo (or download it as a ZIP and unzip it):
-   ```bash
-   git clone https://github.com/aakarshika/tab-tidy.git
-   ```
+1. Download `tab-tidy-<version>.zip` from the [latest release](https://github.com/aakarshika/tab-tidy/releases/latest) and unzip it. Keep the unzipped folder somewhere permanent: Chrome runs the extension from it.
 2. Open `chrome://extensions` in Chrome.
 3. Turn on **Developer mode** (top right).
-4. Click **Load unpacked** and select the **`src/`** folder inside the repo.
+4. Click **Load unpacked** and select the unzipped folder.
 5. Pin Tab Tidy to your toolbar from the puzzle-piece menu.
 6. The **Settings** page opens on its own. Add the sites you want kept pinned (see [Configure](#configure)), or skip it and just use the cleanup.
+
+To update, download the new zip, replace the folder's contents and click the reload icon on Tab Tidy's card in `chrome://extensions`. Your settings are kept.
+
+To run the latest code from `main` instead, clone the repo and select its **`src/`** folder in step 4:
+
+```bash
+git clone https://github.com/aakarshika/tab-tidy.git
+```
 
 Works in Chrome and other Chromium browsers (Edge, Brave, Arc) that support Manifest V3 and tab groups.
 
