@@ -8,7 +8,7 @@ A one-click Chrome extension that cleans up tab chaos. It merges all your window
 No accounts, no network requests and no tracking: everything happens locally in your browser.
 
 <p align="center">
-  <img src="docs/popup.png" width="300" alt="The Tab Tidy popup after a cleanup: window, tab and pin counts, five pinned anchor tabs, a log of what changed and the domain groups created">
+  <img src="docs/popup.png" width="300" alt="The Tab Tidy popup after a cleanup: window, tab and pin counts, four pinned anchor tabs, a log of what changed and the domain groups created">
 </p>
 
 ## What a cleanup does
@@ -20,7 +20,7 @@ Click the toolbar icon and press **Run cleanup**:
 3. **Merges windows.** Every tab moves into your focused window (or the biggest window if none is focused).
 4. **Opens missing anchors.** Any anchor site without a tab gets opened and pinned.
 5. **Sorts pinned tabs** into the order you configured.
-6. **Places a "first" tab.** An optional tab (by default a local dev server) is placed right after the pins, and opened if it's missing.
+6. **Places a "first" tab.** If you turn this on, a tab you choose (a local dev server, say) is placed right after the pins, and opened if it's missing.
 7. **Groups by domain.** Any root domain with 2 or more unpinned tabs gets its own colored tab group.
 
 The popup shows a live summary (windows, tabs, pins and the state of each anchor) and a log of what changed.
@@ -40,12 +40,15 @@ Tab Tidy isn't on the Chrome Web Store yet, so you install it from source:
 3. Turn on **Developer mode** (top right).
 4. Click **Load unpacked** and select the **`src/`** folder inside the repo.
 5. Pin Tab Tidy to your toolbar from the puzzle-piece menu.
+6. The **Settings** page opens on its own. Add the sites you want kept pinned (see [Configure](#configure)), or skip it and just use the cleanup.
 
 Works in Chrome and other Chromium browsers (Edge, Brave, Arc) that support Manifest V3 and tab groups.
 
 ## Configure
 
-The defaults are the author's own setup, so you'll probably want to change them. Click **Settings** in the popup (or right-click the toolbar icon and choose **Options**) to:
+Tab Tidy starts with **no anchors** and the first unpinned tab **turned off**, so until you set it up, a cleanup only merges windows, removes duplicates and groups tabs by domain. It never opens or pins a site you didn't choose.
+
+The Settings page opens when you install Tab Tidy. To get back to it later, click **Settings** in the popup (or right-click the toolbar icon and choose **Options**). There you can:
 
 - add, remove and reorder your **pinned anchors**, and pick a color for each;
 - edit the **first unpinned tab**, or turn it off;

@@ -16,22 +16,21 @@
 //   url    Opened when no matching tab exists.
 //   color  Chrome tab group color: grey, blue, red, yellow, green, pink,
 //          purple, cyan or orange. Used for the dot in the popup.
-export const PINNED_ANCHORS = [
-  { name: 'YouTube',       match: 'youtube.com',      url: 'https://youtube.com',      color: 'red'    },
-  { name: 'ChatGPT',       match: 'chatgpt.com',      url: 'https://chatgpt.com',      color: 'green'  },
-  { name: 'Claude',        match: 'claude.ai',        url: 'https://claude.ai',        color: 'orange' },
-  { name: 'Claude Design', match: 'claude.ai/design', url: 'https://claude.ai/design', color: 'purple' },
-  { name: 'Gmail',         match: 'mail.google.com',  url: 'https://mail.google.com',  color: 'blue'   },
-  // { name: 'Notion', match: 'notion.so', url: 'https://notion.so', color: 'grey' },
-];
+//
+// New installs start with none, so a first cleanup never opens or closes
+// sites the user didn't choose. Examples of what an entry looks like:
+//
+//   { name: 'Gmail',         match: 'mail.google.com',  url: 'https://mail.google.com',  color: 'blue'   },
+//   { name: 'YouTube',       match: 'youtube.com',      url: 'https://youtube.com',      color: 'red'    },
+//   { name: 'Claude',        match: 'claude.ai',        url: 'https://claude.ai',        color: 'orange' },
+//   { name: 'Claude Design', match: 'claude.ai/design', url: 'https://claude.ai/design', color: 'purple' },
+export const PINNED_ANCHORS = [];
 
 // A tab that always sits right after the pinned tabs (handy for a local dev
-// server). It is opened if missing. Set to null to turn this off by default.
-export const FIRST_UNPINNED_TAB = {
-  name:  'Dev Server',
-  match: 'localhost:5173',
-  url:   'http://localhost:5173',
-};
+// server). It is opened if missing. Off (null) for new installs. Example:
+//
+//   { name: 'Dev Server', match: 'localhost:5173', url: 'http://localhost:5173' }
+export const FIRST_UNPINNED_TAB = null;
 
 // Colors cycled through for the per-domain tab groups (Chrome color tokens).
 // Not editable on the options page yet.

@@ -5,6 +5,12 @@
 import { previewTabs } from './preview.js';
 import { tidyTabs } from './tidy.js';
 
+// New installs start with no anchors, so open the settings page once to let
+// people pick their own. Updates and browser restarts don't trigger this.
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === chrome.runtime.OnInstalledReason.INSTALL) chrome.runtime.openOptionsPage();
+});
+
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg.action === 'tidy') {
     tidyTabs()

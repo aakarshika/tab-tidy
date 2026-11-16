@@ -30,11 +30,20 @@ test('defaultSettings mirrors src/config.js', () => {
 
 test('defaultSettings returns a fresh copy every time', () => {
   const a = defaultSettings();
-  a.anchors[0].name = 'changed';
+  a.anchors.forEach(x => { x.name = 'changed'; });
   a.anchors.push(anchor());
   a.firstTab.enabled = !a.firstTab.enabled;
+  a.domainGroupColors.push('red');
   assert.deepEqual(defaultSettings().anchors, PINNED_ANCHORS);
   assert.notEqual(defaultSettings().firstTab.enabled, a.firstTab.enabled);
+  assert.deepEqual(defaultSettings().domainGroupColors, DOMAIN_GROUP_COLORS);
+});
+
+// A first cleanup must never open or close sites the user didn't choose.
+test('new installs start neutral: no anchors, first tab off', () => {
+  const d = defaultSettings();
+  assert.deepEqual(d.anchors, []);
+  assert.equal(d.firstTab.enabled, false);
 });
 
 test('the shipped defaults pass validation', () => {

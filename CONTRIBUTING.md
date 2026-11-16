@@ -79,7 +79,7 @@ Most of the extension talks to Chrome APIs that the unit tests can't reach, so *
 - **Put new pure logic in `matching.js`** (or a new module without `chrome.*` calls) and add tests for it in `test/`.
 - **Be careful with permissions.** Adding a permission changes the install warning for every user. Explain why in the PR.
 - **Never use `innerHTML` with tab data.** Page titles and URLs come from websites. Build DOM nodes and set `textContent` (see `el()` in `popup.js`).
-- **Keep your personal config out of PRs.** Use the options page for your own setup. Only change `src/config.js` when the PR is about the defaults.
+- **Keep your personal config out of PRs.** Use the options page for your own setup. Only change `src/config.js` when the PR is about the defaults, and keep them neutral: new installs start with no anchors and the first unpinned tab off, so a first cleanup never opens or closes sites the user didn't pick. A test in `test/settings.test.js` checks this.
 - **Small, focused PRs** are much easier to review than large ones.
 - **Update [CHANGELOG.md](CHANGELOG.md)** under *Unreleased* for any user-visible change.
 
