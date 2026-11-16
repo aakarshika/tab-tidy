@@ -135,14 +135,14 @@ docs(readme): document the storage permission
 refactor(background): split tidy steps into helpers
 ci: run the manifest check on pull requests
 build(deps-dev): bump eslint from 10.15.0 to 10.16.0
-chore(release): v1.2
+chore(release): v0.1.0
 ```
 
 ## Releasing (maintainers)
 
 1. Bump `version` in `src/manifest.json`.
 2. Move the *Unreleased* entries in `CHANGELOG.md` under the new version.
-3. Commit as `chore(release): v1.2`, then tag: `git tag v1.2 && git push --tags`.
+3. Commit as `chore(release): v0.1.0`, then tag: `git tag v0.1.0 && git push --tags`.
 4. Run `npm run package` and attach `dist/tab-tidy-<version>.zip` to the GitHub release (and upload it to the Chrome Web Store, if published there).
 
 ## License

@@ -23,7 +23,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - ESLint, unit tests for URL matching and settings validation, a manifest check and a packaging script.
 - GitHub Actions CI.
 
-## [1.1]
+## [0.0.1]
 
 - Merge all windows into one, remove duplicate tabs and group tabs by domain.
 - Keep a configured set of anchor sites pinned in a fixed order, preferring the copy you were actively using.

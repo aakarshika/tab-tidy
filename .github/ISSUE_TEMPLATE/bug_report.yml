@@ -38,7 +38,7 @@ body:
     attributes:
       label: Tab Tidy version
       description: Shown in the top-right corner of the popup.
-      placeholder: v1.1
+      placeholder: v0.0.1
   - type: dropdown
     id: config
     attributes:

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tab Tidy",
-  "version": "1.1",
+  "version": "0.0.1",
   "description": "Merges windows, deduplicates, groups by domain, and enforces your pinned anchor set.",
   "homepage_url": "https://github.com/aakarshika/tab-tidy",
   "permissions": ["tabs", "tabGroups", "storage"],
